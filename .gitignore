@@ -12,3 +12,4 @@ data/
 data_daily/
 data_dukascopy/
 data_news/
+config/api_keys.env
