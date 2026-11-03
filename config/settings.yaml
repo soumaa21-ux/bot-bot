@@ -1,0 +1,64 @@
+# Paramètres du bot. Tout ce qui concerne la prop firm est dans rules_firm.yaml.
+
+symbols: [EURUSD, US500, US100, US30, XAUUSD, XAGUSD, USOIL]   # périmètre USD (BTC/ETH et indices EUR/JPY exclus)
+timeframe: H1               # bougies fermées uniquement (données disponibles : H1)
+check_interval_seconds: 20  # boucle live : détection de nouvelle bougie
+
+# --- Gestion du risque ---
+risk:
+  risk_per_trade_pct: 0.005      # 0,5 % de l'équité/solde le plus bas par trade
+  max_open_positions: 2          # positions simultanées (bot seulement)
+  max_total_open_risk_pct: 0.01  # risque cumulé ouvert plafonné à 1 %
+  size_factor_warn: 0.5          # taille réduite de moitié au niveau d'alerte
+  daily_warn_level: 0.50         # fraction de la limite journalière utilisée
+  daily_block_level: 0.70        # plus de nouvelle entrée
+  daily_force_close_level: 0.85  # fermeture de toutes les positions, pause jusqu'au reset
+  trailing_block_level: 0.85     # était 0.70 : gelait le compte sans fermer les positions
+  trailing_force_close_level: 0.85
+  max_spread_multiple: 3.0       # rejet si spread > 3 x spread moyen
+  # Budget de perte trailing par marché (fraction du capital initial). Une fois atteint à
+  # budget x force_close_level, seul ce marché est fermé et gelé. Le compte continue.
+  # Vide = désactivé (superviseur de compte seul).
+  market_budgets:                # parts pondérées : indices 1,5 %, autres 0,9 % (somme 8,1 %, > 6 % : le superviseur global reste le garde-fou)
+    US500: 0.015
+    US100: 0.015
+    US30: 0.015
+    EURUSD: 0.009
+    XAUUSD: 0.009
+    XAGUSD: 0.009
+    USOIL: 0.009
+
+# --- Stratégie (5 paramètres libres ; les autres sont structurels) ---
+strategy:
+  name: ma_cross_rsi_trend
+  fast_ma: 9
+  slow_ma: 21
+  sl_atr_mult: 1.5
+  tp_rr: 2.0
+  adx_min: 20
+  # structurels (non optimisés)
+  trend_ema: 200
+  rsi_period: 14
+  rsi_buy_min: 50
+  rsi_buy_max: 70
+  rsi_sell_min: 30
+  rsi_sell_max: 50
+  atr_period: 14
+  adx_period: 14
+  max_bars_hold: 24             # sortie temporelle : 24 bougies H1 = 24 h
+
+# --- Session par défaut (UTC, heures incluses) : surchargée par symbol dans symbols.yaml ---
+session_utc:
+  start_hour: 7
+  end_hour: 20
+
+# --- Coûts (backtest et calcul des niveaux de spread) ---
+costs:
+  commission_per_lot_round_turn: 3.0   # à vérifier chez le broker
+  slippage_pips: 0.3
+  default_spread_pips: 1.0             # secours si ni colonne spread ni typical_spread_pips
+
+# --- Monitoring (optionnel) ---
+alerts:
+  telegram_enabled: false
+  # Renseignez TELEGRAM_TOKEN et TELEGRAM_CHAT_ID en variables d'environnement.

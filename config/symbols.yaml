@@ -1,0 +1,134 @@
+# Spécifications par symbole.
+# ATTENTION : valeurs de référence (HYPOTHÈSES) à vérifier avec symbol_info de votre broker.
+# En live, le bot lit tick_size, tick_value, contract_size, volume_* directement depuis MT5.
+#
+# Ce qui influence les résultats :
+#  - % de risque et R : quasi indépendants de tick_value (le sizing s'ajuste) ;
+#  - taille minimale 0,01 lot et plafond de levier : dépendent de tick_value ;
+#  - coûts : spread (typical_spread_pips x pip_size) et commission (par lot, FX seulement).
+# tick_value = valeur monétaire d'un tick pour 1 lot, en devise du compte (USD).
+# session_* = heures UTC incluses pendant lesquelles le symbole peut être tradé.
+
+EURUSD:
+  digits: 5
+  pip_size: 0.0001
+  tick_size: 0.00001
+  tick_value: 1.0            # 100 000 x 0,00001
+  contract_size: 100000
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 100.0
+  typical_spread_pips: 0.8
+  quote_is_usd: true
+  session_start: 7
+  session_end: 20
+  commission_per_lot: 3.0    # FX : commission aller-retour par lot (à vérifier)
+
+US500:                       # S&P 500 CFD
+  digits: 2
+  pip_size: 1.0
+  tick_size: 0.01
+  tick_value: 0.5            # HYPOTHÈSE : contrat de 50, 1 point = 50 $
+  contract_size: 50
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 50.0
+  typical_spread_pips: 0.6
+  quote_is_usd: true
+  session_start: 13
+  session_end: 20
+  commission_per_lot: 0.0
+
+US100:                       # Nasdaq 100 CFD
+  digits: 2
+  pip_size: 1.0
+  tick_size: 0.01
+  tick_value: 0.2            # HYPOTHÈSE : contrat de 20
+  contract_size: 20
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 50.0
+  typical_spread_pips: 1.5
+  quote_is_usd: true
+  session_start: 13
+  session_end: 20
+  commission_per_lot: 0.0
+
+US30:                        # Dow Jones CFD
+  digits: 2
+  pip_size: 1.0
+  tick_size: 0.01
+  tick_value: 0.1            # HYPOTHÈSE : contrat de 10
+  contract_size: 10
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 50.0
+  typical_spread_pips: 3.0
+  quote_is_usd: true
+  session_start: 13
+  session_end: 20
+  commission_per_lot: 0.0
+
+XAUUSD:                      # Or
+  digits: 2
+  pip_size: 0.1
+  tick_size: 0.01
+  tick_value: 1.0            # HYPOTHÈSE : 100 oz, 1 cent = 1 $
+  contract_size: 100
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 50.0
+  typical_spread_pips: 3.0   # 0,30 $
+  quote_is_usd: true
+  session_start: 7
+  session_end: 20
+  commission_per_lot: 0.0
+
+XAGUSD:                      # Argent
+  digits: 3
+  pip_size: 0.01
+  tick_size: 0.001
+  tick_value: 5.0            # HYPOTHÈSE : 5000 oz
+  contract_size: 5000
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 50.0
+  typical_spread_pips: 4.0   # 0,04 $
+  quote_is_usd: true
+  session_start: 7
+  session_end: 20
+  commission_per_lot: 0.0
+
+USOIL:                       # Pétrole WTI
+  digits: 2
+  pip_size: 0.01
+  tick_size: 0.01
+  tick_value: 10.0           # HYPOTHÈSE : 1000 bbl
+  contract_size: 1000
+  volume_min: 0.01
+  volume_step: 0.01
+  volume_max: 50.0
+  typical_spread_pips: 4.0   # 0,04 $
+  quote_is_usd: true
+  session_start: 7
+  session_end: 20
+  commission_per_lot: 0.0
+
+# --- Hors périmètre de sizing actuel : devise de cotation non USD ou actif non autorisé ---
+GER40:
+  quote_is_usd: false
+  note: "DAX cotée en EUR : conversion EUR/USD non implémentée"
+FRA40:
+  quote_is_usd: false
+  note: "CAC40 cotée en EUR : conversion EUR/USD non implémentée"
+JP225:
+  quote_is_usd: false
+  note: "Nikkei cotée en JPY : conversion JPY/USD non implémentée"
+BTCUSD:
+  quote_is_usd: false
+  excluded: true
+  note: "Cryptos non supportées par Blue Guardian (sources tierces) : exclus"
+ETHUSD:
+  quote_is_usd: false
+  excluded: true
+  note: "Cryptos non supportées par Blue Guardian (sources tierces) : exclus"

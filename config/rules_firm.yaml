@@ -1,0 +1,45 @@
+# Règles de la prop firm Blue Guardian.
+# Source principale : blueguardian.com/forex (offre Instant 100K, valeurs officielles).
+# Les autres modèles (1 Step, 2 Step) diffèrent selon les sites tiers : à vérifier
+# dans votre tableau de bord avant tout achat. Le bot applique les valeurs les plus strictes.
+
+firm: "Blue Guardian"
+account_model: "Instant 100K (forex)"
+initial_balance: 100000
+
+# Drawdown journalier : officiel 3 % (3 000 $ sur 100K), mesuré depuis le solde de début de journée.
+# Sources tierces : base = max(solde, equity) au reset. On prend la valeur la plus stricte.
+max_daily_loss_pct: 0.03
+
+# Drawdown total trailing : officiel 6 % (6 000 $ sur 100K).
+# Sources tierces : trailing depuis le plus haut solde clôturé.
+max_trailing_dd_pct: 0.06
+
+# Reset journalier : sources tierces indiquent 17:00 heure de New York. À VÉRIFIER.
+daily_reset:
+  timezone: "America/New_York"
+  hour: 17
+  minute: 0
+
+# Levier maximum officiel (forex) : 1:30
+max_leverage: 30
+
+# News : officiel "No" pour le modèle Instant forex. Blocage des entrées autour des annonces à fort impact.
+news_blackout_minutes: 15
+
+# Holding time minimum (règle tick scalping, sources tierces) : 2 minutes.
+min_hold_seconds: 120
+
+# Autorisations officielles (forex, Instant)
+allow_eas: true
+allow_weekend_holding: true
+allow_overnight_holding: true
+
+# Reprise après coupure trailing (stratégie du superviseur, pas une règle de la firme).
+# Une coupure ferme tout. Reprise seulement si l'équité remonte sous max_dd_pct_to_rearm
+# du plus haut, à taille réduite. Au-delà de max_locks coupures : arrêt définitif.
+trailing_rearm:
+  enabled: true
+  max_dd_pct_to_rearm: 0.02
+  size_factor: 0.25
+  max_locks: 2
