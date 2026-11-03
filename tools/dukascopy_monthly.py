@@ -40,8 +40,20 @@ def fetch_month(sym, a, b, workers=3):
     d.run_to(sym, a, b, f, workers)
 
 
-def main(list_symbols=PRIORITY):
-    for sym in list_symbols:
+def parse_month(txt):
+    return datetime.strptime(txt, "%Y-%m").replace(tzinfo=timezone.utc)
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if len(argv) == 3:  # SYMBOLE DEBUT(AAAA-MM) FIN(AAAA-MM, exclu)
+        sym, a, b = argv[0], parse_month(argv[1]), parse_month(argv[2])
+        for ma, mb in months(a, b):
+            fetch_month(sym, ma, mb)
+            print("OK", sym, f"{ma:%Y-%m}", flush=True)
+        print("TERMINE", sym, flush=True)
+        return
+    for sym in PRIORITY:
         for a, b in reversed(months(START, END)):  # du plus récent au plus ancien
             fetch_month(sym, a, b)
             print("OK", sym, f"{a:%Y-%m}", flush=True)
