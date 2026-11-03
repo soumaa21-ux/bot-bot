@@ -1,0 +1,42 @@
+name: Dukascopy GBPUSD H1 (2019-2026)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        symbol: [GBPUSD]
+        period:
+          - { start: "2019-01", end: "2020-01" }
+          - { start: "2020-01", end: "2021-01" }
+          - { start: "2021-01", end: "2022-01" }
+          - { start: "2022-01", end: "2023-01" }
+          - { start: "2023-01", end: "2024-01" }
+          - { start: "2024-01", end: "2024-11" }
+          - { start: "2024-11", end: "2025-02" }
+          - { start: "2025-02", end: "2025-05" }
+          - { start: "2025-05", end: "2025-08" }
+          - { start: "2025-08", end: "2025-11" }
+          - { start: "2025-11", end: "2026-02" }
+          - { start: "2026-02", end: "2026-05" }
+          - { start: "2026-05", end: "2026-08" }
+          - { start: "2026-08", end: "2026-11" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests pandas
+      - name: Télécharger les mois
+        run: python tools/dukascopy_monthly.py "${{ matrix.symbol }}" "${{ matrix.period.start }}" "${{ matrix.period.end }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.symbol }}_${{ matrix.period.start }}
+          path: data_dukascopy/chunks/
+          if-no-files-found: warn
