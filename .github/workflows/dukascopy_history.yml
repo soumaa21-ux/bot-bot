@@ -1,0 +1,34 @@
+name: Dukascopy H1 historique 2019-2024
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        symbol: [EURUSD, US500, US100, US30, XAUUSD, XAGUSD, USOIL]
+        period:
+          - { start: "2019-01", end: "2020-01" }
+          - { start: "2020-01", end: "2021-01" }
+          - { start: "2021-01", end: "2022-01" }
+          - { start: "2022-01", end: "2023-01" }
+          - { start: "2023-01", end: "2024-01" }
+          - { start: "2024-01", end: "2024-11" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests pandas
+      - name: Télécharger les mois
+        run: python tools/dukascopy_monthly.py "${{ matrix.symbol }}" "${{ matrix.period.start }}" "${{ matrix.period.end }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: H1_${{ matrix.symbol }}_${{ matrix.period.start }}
+          path: data_dukascopy/chunks/${{ matrix.symbol }}/
+          if-no-files-found: warn
