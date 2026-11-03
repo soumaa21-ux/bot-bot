@@ -20,6 +20,7 @@ BASE = "https://datafeed.dukascopy.com/datafeed/{sym}/{y:04d}/{m:02d}/{d:02d}/{h
 # nom Dukascopy, diviseur de prix (nombre de décimales)
 SYMBOLS = {
     "EURUSD": ("EURUSD", 100000),
+    "GBPUSD": ("GBPUSD", 100000),
     "US500": ("USA500IDXUSD", 1000),
     "US100": ("USATECHIDXUSD", 1000),
     "US30": ("USA30IDXUSD", 1000),
