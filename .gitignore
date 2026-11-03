@@ -7,3 +7,7 @@ state/
 *.sqlite
 *.db
 data_dukascopy/cache/
+# Données de marché : restent en local, ne sont jamais publiées
+data/
+data_daily/
+data_dukascopy/
